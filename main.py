@@ -17,10 +17,10 @@ def clean_data(raw_df:pd.DataFrame) ->pd.DataFrame:
     return raw_df
 
 
-path_to_end_folder_report = 'data'
-name_file_smeta = 'data/Бюджетная заявка от отдела СПО.xlsx'
+path_to_end_folder_calculate_budget_spo = 'data'
+name_file_data_calculate_budget_spo = 'data/Бюджетная заявка от отдела СПО.xlsx'
 # получаем список листов в таблице
-sheetnames = openpyxl.load_workbook(name_file_smeta).sheetnames
+sheetnames = openpyxl.load_workbook(name_file_data_calculate_budget_spo).sheetnames
 
 # Создаем документ openpyxl
 
@@ -30,13 +30,13 @@ wb.create_sheet(title='ГАПОУ',index=1)
 wb.create_sheet(title='ГБПОУ',index=2)
 
 # получаем базовый датафрейм
-base_df = pd.read_excel(name_file_smeta,sheet_name='СВОД')
+base_df = pd.read_excel(name_file_data_calculate_budget_spo, sheet_name='СВОД')
 
 #Итерируемся открываем листы
 for sheet in sheetnames:
     if sheet !='СВОД':
         # Считываем датафрейм
-        temp_df = pd.read_excel(name_file_smeta, sheet_name=sheet)
+        temp_df = pd.read_excel(name_file_data_calculate_budget_spo, sheet_name=sheet)
         base_df= pd.concat([base_df,temp_df],axis=0,ignore_index=True)
 
 
@@ -81,4 +81,4 @@ for r in dataframe_to_rows(out_gb_df,index=False,header=True):
 t = time.localtime()
 current_time = time.strftime('%H_%M_%S', t)
 # Сохраняем итоговый файл
-wb.save(f'{path_to_end_folder_report}/Бюджетная заявка от СПО.xlsx {current_time}.xlsx')
+wb.save(f'{path_to_end_folder_calculate_budget_spo}/Бюджетная заявка от СПО.xlsx {current_time}.xlsx')
