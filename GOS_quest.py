@@ -13,11 +13,11 @@ from openpyxl.styles import Alignment
 
 # Создаем регулярные выражения
 name_table_re = re. compile(r'Наименование государственной услуги:.*?(Реализация\s.+?)[2]')
-cat_table_re = re.compile(r'Категории потребителей государственной услуги:.+?Физические лица,(.+?)[3]')
+cat_table_re = re.compile(r'Категории потребителей государственной услуги:.+?(Физические лица,.+?)[3]')
 
-# doc = Document('БРИТ.docx')
+doc = Document('БРИТ.docx')
 # doc = Document('БКН.docx')
-doc = Document('БМК.docx')
+# doc = Document('БМК.docx')
 # последовательность всех таблиц документа
 all_tables = doc.tables
 print('Всего таблиц в документе:', len(all_tables))
@@ -85,18 +85,18 @@ for i in range(1,len(lst_df),3):
 
 
 
-# print(dct_data)
 wb = openpyxl.Workbook()
-wb['Sheet']['A1'] = 'Наименование услуги'
-wb['Sheet']['B1'] = 'Категория потребителей услуги'
-wb['Sheet']['C1'] = 'Профессии по программам среднего профессионального образования'
-wb['Sheet']['D1'] = 'Утверждено в госзадании на год'
-wb['Sheet']['E1'] = 'Исполнено на отчетную дату'
-wb['Sheet']['F1'] = 'Допустимое отклонение в процентах'
-wb['Sheet']['G1'] = 'Допустимое отклонение в ед.'
-wb['Sheet']['H1'] = 'отклонение, превышающее допустимое (возможное) значение, %'
-wb['Sheet']['I1'] = 'отклонение, превышающее допустимое (возможное) значение, чел.'
-wb['Sheet']['J1'] = 'причина отклонения'
+wb['Sheet']['A1'] = 'Уникальный номер реестровой записи'
+wb['Sheet']['B1'] = 'Наименование государственной услуги'
+wb['Sheet']['C1'] = 'Категория потребителей государственной услуги'
+wb['Sheet']['D1'] = 'Профессии по программам среднего профессионального образования'
+wb['Sheet']['E1'] = 'Утверждено в госзадании на год'
+wb['Sheet']['F1'] = 'Исполнено на отчетную дату'
+wb['Sheet']['G1'] = 'Допустимое отклонение в процентах'
+wb['Sheet']['H1'] = 'Допустимое отклонение в ед.'
+wb['Sheet']['I1'] = 'отклонение, превышающее допустимое (возможное) значение, %'
+wb['Sheet']['J1'] = 'отклонение, превышающее допустимое (возможное) значение, чел.'
+wb['Sheet']['K1'] = 'причина отклонения'
 
 wb['Sheet'].column_dimensions['A'].width = 90
 wb['Sheet'].column_dimensions['B'].width = 30
@@ -113,10 +113,10 @@ wb['Sheet'].column_dimensions['J'].width = 30
 for key,value in dct_data.items():
     # Перебираем ключи внутри словаря value
     for cat_key,cat_value in value.items():
-        temp_df = cat_value.drop([0,2,3,4,5,6,7,8],axis=1)
+        temp_df = cat_value.drop([2,3,4,5,6,7,8],axis=1)
 
-        temp_df.insert(0,'Наименование услуги',key)
-        temp_df.insert(1,'Категория потребителей',cat_key)
+        temp_df.insert(1,'Наименование услуги',key)
+        temp_df.insert(2,'Категория потребителей государственной услуги',cat_key)
         for r in dataframe_to_rows(temp_df,index=False,header=False):
             if len(r) != 1:
                 wb['Sheet'].append(r)
