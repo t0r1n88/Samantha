@@ -1,3 +1,4 @@
+import numpy as np
 from docx import Document
 import pandas as pd
 import openpyxl
@@ -183,7 +184,7 @@ def proccessing_scope_state_task():
                             itog_df['Реальное отклонение в единицах'] * 100 / itog_df['Госзадание №2']).round(2)
 
                     itog_df['Отклонение больше 5%'] = itog_df['Отклонение в процентах'].apply(
-                        lambda x: 'Да' if x > 5 else 'Нет')
+                        lambda x: 'Да' if (pd.isna(x) or x > 5 ) else 'Нет')
 
                     itog_df['Отклонение в процентах'] = itog_df['Отклонение в процентах'].astype(str) + '%'
 
@@ -235,7 +236,7 @@ def proccessing_scope_state_task():
         t = time.localtime()
         current_time = time.strftime('%H_%M_%S', t)
         # Сохраняем итоговый файл
-        wb.save(f'{path_to_end_folder}/Сводный отчет по выполнению госзадания {current_time}.xlsx')
+        wb.save(f'{path_to_end_folder}/Сводный отчет по выполнению объемов госзадания {current_time}.xlsx')
         messagebox.showinfo('ЦОПП Бурятия', 'Обработка успешно завершена!!!')
     else:
         name_poo = path_to_data.split('/')[-1]
@@ -359,7 +360,7 @@ def proccessing_scope_state_task():
                     itog_df['Реальное отклонение в единицах'] * 100 / itog_df['Госзадание №2']).round(2)
 
             itog_df['Отклонение больше 5%'] = itog_df['Отклонение в процентах'].apply(
-                lambda x: 'Да' if x > 5 else 'Нет')
+                lambda x: 'Да' if (pd.isna(x) or x > 5 ) else 'Нет')
 
             itog_df['Отклонение в процентах'] = itog_df['Отклонение в процентах'].astype(str) + '%'
 
@@ -422,33 +423,36 @@ if __name__=='__main__':
           image=img_scope_state_task
           ).grid(column=1, row=0, padx=10, pady=25)
 
+
+    # Создаем переменную хранящую тип документа, в зависимости от значения будет использоваться та или иная функция
+    group_rb_type_doc = IntVar()
+    # Создаем фрейм для размещения переключателей(pack и грид не используются в одном контейнере)
+    frame_rb_type_doc = LabelFrame(tab_processing_scope_state_task, text='Выберите режим обработки')
+    frame_rb_type_doc.grid(column=0, row=2, padx=10)
+    #
+    Radiobutton(frame_rb_type_doc, text='Для Министерства образования и науки', variable=group_rb_type_doc, value=0).pack()
+    Radiobutton(frame_rb_type_doc, text='Для ПОО', variable=group_rb_type_doc, value=1).pack()
+
     # Создаем область для того чтобы поместить туда подготовительные кнопки(выбрать файл,выбрать папку и т.п.)
     frame_data_for_scope_state_task = LabelFrame(tab_processing_scope_state_task, text='Подготовка')
-    frame_data_for_scope_state_task.grid(column=0, row=2, padx=10)
+    frame_data_for_scope_state_task.grid(column=0, row=3, padx=10)
 
 
     # Создаем кнопку Выбрать папку где находятся данные
     btn_choose_folder_data = Button(frame_data_for_scope_state_task, text='1) Выберите папку с данными', font=('Arial Bold', 20),
                                        command=select_folder_data)
-    btn_choose_folder_data.grid(column=0, row=3, padx=10, pady=10)
+    btn_choose_folder_data.grid(column=0, row=4, padx=10, pady=10)
     #
     # Создаем кнопку для выбора папки куда будет генерироваться файл
 
     btn_choose_end_folder_data = Button(frame_data_for_scope_state_task, text='2) Выберите конечную папку', font=('Arial Bold', 20),
                                        command=select_end_folder
                                        )
-    btn_choose_end_folder_data.grid(column=0, row=4, padx=10, pady=10)
+    btn_choose_end_folder_data.grid(column=0, row=5, padx=10, pady=10)
 
-    # Создаем переменную хранящую тип документа, в зависимости от значения будет использоваться та или иная функция
-    group_rb_type_doc = IntVar()
-    # Создаем фрейм для размещения переключателей(pack и грид не используются в одном контейнере)
-    frame_rb_type_doc = LabelFrame(tab_processing_scope_state_task, text='Выберите режим обработки')
-    frame_rb_type_doc.grid(column=0, row=5, padx=10)
-    #
-    Radiobutton(frame_rb_type_doc, text='Для Министерства образования и науки', variable=group_rb_type_doc, value=0).pack()
-    Radiobutton(frame_rb_type_doc, text='Для ПОО', variable=group_rb_type_doc, value=1).pack()
 
-    # Создаем кнопку для создания документов из таблиц с произвольной структурой
+
+    # Создаем кнопку для обработки данных
     btn_processing_scope_state_task = Button(tab_processing_scope_state_task, text='Обработать',
                                              font=('Arial Bold', 20),
                                              command=proccessing_scope_state_task
