@@ -3,18 +3,10 @@ import  openpyxl
 from openpyxl.utils.dataframe import dataframe_to_rows
 import time
 import os
-from docxtpl import DocxTemplate
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import ttk
-import datetime
-from datetime import date
-from openpyxl.chart.label import DataLabelList
-from openpyxl.chart import BarChart, Reference, PieChart, PieChart3D, Series
-import warnings
-from openpyxl.styles import Font
-from openpyxl.styles import Alignment
 
 
 def resource_path(relative_path):
